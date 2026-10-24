@@ -16,12 +16,15 @@
     --accent: #2f6fde;
     --accent-text: #ffffff;
     --danger: #c93a3a;
-    --male-bg: #d6e6ff;
-    --male-text: #0d3b8c;
-    --female-bg: #ffdbe7;
-    --female-text: #8a1640;
     --toast-bg: #1d1f23;
     --toast-text: #ffffff;
+    /* 各欄位的標示顏色 */
+    --c0-bg: #d6e6ff; --c0-fg: #0d3b8c;
+    --c1-bg: #ffdbe7; --c1-fg: #8a1640;
+    --c2-bg: #d4f2dc; --c2-fg: #145c2c;
+    --c3-bg: #ffe9c2; --c3-fg: #7a4a00;
+    --c4-bg: #e8dcff; --c4-fg: #4a2490;
+    --c5-bg: #cdf0ef; --c5-fg: #0b5755;
   }
   @media (prefers-color-scheme: dark) {
     :root {
@@ -34,14 +37,22 @@
       --accent: #5b92f0;
       --accent-text: #0b1020;
       --danger: #f07171;
-      --male-bg: #1f3a66;
-      --male-text: #cfe0ff;
-      --female-bg: #5c2338;
-      --female-text: #ffd6e4;
       --toast-bg: #e7e9ec;
       --toast-text: #121417;
+      --c0-bg: #1f3a66; --c0-fg: #cfe0ff;
+      --c1-bg: #5c2338; --c1-fg: #ffd6e4;
+      --c2-bg: #1d4a2b; --c2-fg: #c9f0d4;
+      --c3-bg: #5a3d0c; --c3-fg: #ffe2ad;
+      --c4-bg: #3b2766; --c4-fg: #e3d6ff;
+      --c5-bg: #134746; --c5-fg: #c3efed;
     }
   }
+  .c0 { --hl-bg: var(--c0-bg); --hl-fg: var(--c0-fg); }
+  .c1 { --hl-bg: var(--c1-bg); --hl-fg: var(--c1-fg); }
+  .c2 { --hl-bg: var(--c2-bg); --hl-fg: var(--c2-fg); }
+  .c3 { --hl-bg: var(--c3-bg); --hl-fg: var(--c3-fg); }
+  .c4 { --hl-bg: var(--c4-bg); --hl-fg: var(--c4-fg); }
+  .c5 { --hl-bg: var(--c5-bg); --hl-fg: var(--c5-fg); }
   * { box-sizing: border-box; }
   html { -webkit-text-size-adjust: 100%; }
   body {
@@ -55,6 +66,7 @@
   main { max-width: 760px; margin: 0 auto; padding: 16px 16px 48px; }
   h1 { font-size: 1.35rem; margin: 4px 0 16px; }
   h2 { font-size: 1.05rem; margin: 0 0 12px; }
+  h3 { font-size: 1rem; margin: 20px 0 4px; }
   .card {
     background: var(--card);
     border: 1px solid var(--border);
@@ -76,6 +88,7 @@
     min-height: 44px;
   }
   textarea { min-height: 160px; resize: vertical; }
+  textarea.short { min-height: 96px; }
   input:focus, select:focus, textarea:focus, button:focus-visible {
     outline: 2px solid var(--accent);
     outline-offset: 1px;
@@ -97,11 +110,33 @@
   }
   button.primary { background: var(--accent); border-color: var(--accent); color: var(--accent-text); font-weight: 600; }
   button.danger { color: var(--danger); }
+  button.icon { min-width: 44px; padding: 8px 10px; }
   button:disabled { opacity: .45; cursor: not-allowed; }
   .actions { margin-top: 12px; }
   .switch { display: flex; align-items: center; gap: 10px; margin-top: 14px; color: var(--text); font-size: .95rem; }
-  .switch input { width: 22px; height: 22px; margin: 0; accent-color: var(--accent); }
+  .switch input, .check input { width: 22px; height: 22px; margin: 0; accent-color: var(--accent); flex: none; }
   .hint { font-size: .85rem; color: var(--muted); margin: 6px 0 0; }
+  .dot { display: inline-block; width: 12px; height: 12px; border-radius: 50%; background: var(--hl-fg); flex: none; }
+
+  /* 編輯區的欄位卡片 */
+  .fe { border: 1px solid var(--border); border-radius: 10px; padding: 12px; margin-top: 12px; }
+  .fe-head { display: flex; align-items: center; gap: 8px; }
+  .fe-head strong { flex: 1 1 auto; font-size: .95rem; }
+  .fe-head button { flex: none; }
+
+  /* 使用區 */
+  .fu { border: 1px solid var(--border); border-radius: 10px; padding: 12px; margin-bottom: 12px; transition: opacity .15s; }
+  .fu-head { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+  .fu-name { display: flex; align-items: center; gap: 8px; font-weight: 600; flex: 1 1 auto; }
+  .check { display: flex; align-items: center; gap: 8px; margin: 0; color: var(--text); font-size: .95rem; min-height: 44px; cursor: pointer; }
+  .fu-orig { font-size: .85rem; color: var(--muted); margin: 0 0 8px; word-break: break-word; }
+  .fu.off .fu-body { opacity: .45; }
+  .chips { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 8px; }
+  .chip {
+    min-height: 40px; padding: 6px 14px; border-radius: 999px; font-size: 15px;
+  }
+  .chip[aria-pressed="true"] { background: var(--hl-bg); color: var(--hl-fg); border-color: var(--hl-fg); font-weight: 600; }
+
   .output {
     white-space: pre-wrap;
     word-break: break-word;
@@ -113,10 +148,8 @@
     font-size: 15px;
   }
   .output .empty { color: var(--muted); }
-  mark { border-radius: 3px; padding: 0 2px; }
-  mark.m { background: var(--male-bg); color: var(--male-text); }
-  mark.f { background: var(--female-bg); color: var(--female-text); }
-  .legend { display: flex; gap: 12px; flex-wrap: wrap; font-size: .85rem; color: var(--muted); margin-bottom: 8px; }
+  mark { border-radius: 3px; padding: 0 2px; background: var(--hl-bg); color: var(--hl-fg); }
+  .legend { display: flex; gap: 8px 12px; flex-wrap: wrap; font-size: .85rem; color: var(--muted); margin-bottom: 8px; }
   .stat { font-size: .85rem; color: var(--muted); margin-top: 8px; }
   details > summary { cursor: pointer; font-weight: 600; min-height: 32px; list-style-position: inside; }
   details[open] > summary { margin-bottom: 8px; }
@@ -155,41 +188,29 @@
     </div>
   </section>
 
-  <!-- 模板內容編輯 -->
+  <!-- 模板內容編輯（可收合） -->
   <section class="card" id="editorCard">
-    <details id="editorDetails" open>
-      <summary>編輯模板內容</summary>
+    <details id="editorDetails">
+      <summary>編輯模板（名稱、原始 prompt、替換欄位）</summary>
       <label for="tplName">模板名稱</label>
       <input id="tplName" type="text" placeholder="例如：咖啡廳約會" autocomplete="off">
-      <div class="grid2">
-        <div>
-          <label for="tplMale">原本的男生名字</label>
-          <input id="tplMale" type="text" placeholder="例如：Tom" autocomplete="off" autocapitalize="off" spellcheck="false">
-        </div>
-        <div>
-          <label for="tplFemale">原本的女生名字</label>
-          <input id="tplFemale" type="text" placeholder="例如：Ann" autocomplete="off" autocapitalize="off" spellcheck="false">
-        </div>
-      </div>
       <label for="tplPrompt">原始 prompt（og prompt）</label>
       <textarea id="tplPrompt" placeholder="把原始 prompt 貼在這裡"></textarea>
+
+      <h3>替換欄位</h3>
+      <p class="hint">每個欄位設定要從 og prompt 裡找出來換掉的文字，可另外放幾個常用選項。</p>
+      <div id="fieldsEditor"></div>
+      <div class="row actions">
+        <button id="btnAddField" type="button">＋ 新增欄位</button>
+      </div>
       <p class="hint">修改會自動儲存在這個瀏覽器裡。</p>
     </details>
   </section>
 
   <!-- 替換區 -->
   <section class="card" id="swapCard">
-    <h2>換成新名字</h2>
-    <div class="grid2">
-      <div>
-        <label for="newMale">新的男生名字</label>
-        <input id="newMale" type="text" placeholder="留空＝不換" autocomplete="off" autocapitalize="off" spellcheck="false">
-      </div>
-      <div>
-        <label for="newFemale">新的女生名字</label>
-        <input id="newFemale" type="text" placeholder="留空＝不換" autocomplete="off" autocapitalize="off" spellcheck="false">
-      </div>
-    </div>
+    <h2>這次要換成</h2>
+    <div id="useFields"></div>
     <label class="switch"><input id="wholeWord" type="checkbox" checked> 整字比對（避免 Ann 換到 Anna）</label>
     <p class="hint">區分大小寫。</p>
   </section>
@@ -197,10 +218,7 @@
   <!-- 結果 -->
   <section class="card" id="resultCard">
     <h2>結果</h2>
-    <div class="legend">
-      <span><mark class="m">男生名字</mark></span>
-      <span><mark class="f">女生名字</mark></span>
-    </div>
+    <div id="legend" class="legend"></div>
     <div id="output" class="output" aria-live="polite"></div>
     <p id="stat" class="stat"></p>
     <div class="row actions">
@@ -216,40 +234,119 @@
 (function () {
   'use strict';
 
-  var STORE_KEY = 'promptNameSwap.v1';
+  var STORE_KEY = 'promptNameSwap.v1'; // 沿用舊的 key，舊資料讀進來後自動升級
+  var BACKUP_KEY = 'promptNameSwap.v1.backup';
+  var DATA_VERSION = 2;
+  var COLOR_COUNT = 6;
+
+  function makeId(prefix) {
+    return (prefix || 't') + Date.now().toString(36) + Math.random().toString(36).slice(2, 7);
+  }
+  function str(v) { return v == null ? '' : String(v); }
+  function colorClass(i) { return 'c' + (i % COLOR_COUNT); }
+
+  // ---------- 資料格式 ----------
+  // 模板：{ id, name, prompt, fields: [{ id, label, original, options: [], enabled }] }
+  // 使用狀態：state.use[模板 id][欄位 id] = { on, choice, custom }
+
+  function parseOptions(v) {
+    var list = Array.isArray(v) ? v : str(v).split(/\r?\n/);
+    var seen = {}, out = [];
+    list.forEach(function (o) {
+      o = str(o).trim();
+      if (o && !seen[o]) { seen[o] = true; out.push(o); }
+    });
+    return out;
+  }
+
+  function newField(label, original) {
+    return { id: makeId('f'), label: label || '', original: original || '', options: [], enabled: true };
+  }
+
+  function sanitizeField(f) {
+    if (!f || typeof f !== 'object') return null;
+    return {
+      id: typeof f.id === 'string' && f.id ? f.id : makeId('f'),
+      label: str(f.label),
+      original: str(f.original),
+      options: parseOptions(f.options),
+      enabled: f.enabled !== false
+    };
+  }
+
+  // 同時接受新格式（fields）與舊格式（male / female）
+  function sanitizeTemplate(t) {
+    if (!t || typeof t !== 'object') return null;
+    var fields, migrated = false;
+    if (Array.isArray(t.fields)) {
+      fields = t.fields.map(sanitizeField).filter(Boolean);
+    } else {
+      migrated = true;
+      fields = [newField('男角色', str(t.male)), newField('女角色', str(t.female))];
+    }
+    return {
+      tpl: {
+        id: typeof t.id === 'string' && t.id ? t.id : makeId('t'),
+        name: str(t.name),
+        prompt: str(t.prompt),
+        fields: fields
+      },
+      migrated: migrated
+    };
+  }
 
   // ---------- 儲存 ----------
   function defaultState() {
-    return { templates: [], currentId: null, newMale: '', newFemale: '', wholeWord: true };
-  }
-
-  function sanitizeTemplate(t) {
-    if (!t || typeof t !== 'object') return null;
-    return {
-      id: typeof t.id === 'string' && t.id ? t.id : makeId(),
-      name: String(t.name == null ? '' : t.name),
-      prompt: String(t.prompt == null ? '' : t.prompt),
-      male: String(t.male == null ? '' : t.male),
-      female: String(t.female == null ? '' : t.female)
-    };
+    return { version: DATA_VERSION, templates: [], currentId: null, wholeWord: true, use: {} };
   }
 
   function loadState() {
     var s = defaultState();
+    var raw = null, anyMigrated = false;
     try {
-      var raw = localStorage.getItem(STORE_KEY);
+      raw = localStorage.getItem(STORE_KEY);
       if (!raw) return s;
       var data = JSON.parse(raw);
-      if (data && typeof data === 'object') {
-        if (Array.isArray(data.templates)) {
-          s.templates = data.templates.map(sanitizeTemplate).filter(Boolean);
-        }
-        if (typeof data.currentId === 'string') s.currentId = data.currentId;
-        if (typeof data.newMale === 'string') s.newMale = data.newMale;
-        if (typeof data.newFemale === 'string') s.newFemale = data.newFemale;
-        if (typeof data.wholeWord === 'boolean') s.wholeWord = data.wholeWord;
+      if (!data || typeof data !== 'object') return s;
+
+      var migratedIds = [];
+      if (Array.isArray(data.templates)) {
+        data.templates.forEach(function (t) {
+          var r = sanitizeTemplate(t);
+          if (!r) return;
+          s.templates.push(r.tpl);
+          if (r.migrated) { anyMigrated = true; migratedIds.push(r.tpl.id); }
+        });
       }
+      if (typeof data.currentId === 'string') s.currentId = data.currentId;
+      if (typeof data.wholeWord === 'boolean') s.wholeWord = data.wholeWord;
+      if (data.use && typeof data.use === 'object') {
+        Object.keys(data.use).forEach(function (tid) {
+          var m = data.use[tid];
+          if (!m || typeof m !== 'object') return;
+          s.use[tid] = {};
+          Object.keys(m).forEach(function (fid) {
+            var u = m[fid];
+            if (!u || typeof u !== 'object') return;
+            s.use[tid][fid] = { on: !!u.on, choice: str(u.choice), custom: str(u.custom) };
+          });
+        });
+      }
+
+      // 舊版的「新的男生／女生名字」轉到每個舊模板的前兩個欄位
+      var oldMale = str(data.newMale), oldFemale = str(data.newFemale);
+      migratedIds.forEach(function (tid) {
+        var t = findTemplate(s.templates, tid);
+        s.use[tid] = {};
+        s.use[tid][t.fields[0].id] = { on: true, choice: '', custom: oldMale };
+        s.use[tid][t.fields[1].id] = { on: true, choice: '', custom: oldFemale };
+      });
     } catch (e) { /* 資料損毀或無法存取時使用預設值 */ }
+
+    if (anyMigrated) {
+      try { if (!localStorage.getItem(BACKUP_KEY)) localStorage.setItem(BACKUP_KEY, raw); } catch (e) { /* 略過 */ }
+      s._needsSave = true;
+    }
     return s;
   }
 
@@ -264,11 +361,14 @@
   }
   window.addEventListener('pagehide', saveNow);
 
-  function makeId() {
-    return 't' + Date.now().toString(36) + Math.random().toString(36).slice(2, 7);
+  function findTemplate(list, id) {
+    for (var i = 0; i < list.length; i++) if (list[i].id === id) return list[i];
+    return null;
   }
 
   var state = loadState();
+  var needsSave = !!state._needsSave;
+  delete state._needsSave;
 
   // ---------- DOM ----------
   function $(id) { return document.getElementById(id); }
@@ -276,18 +376,41 @@
     select: $('tplSelect'), pickerWrap: $('pickerWrap'), noTpl: $('noTpl'),
     btnNew: $('btnNew'), btnDelete: $('btnDelete'), btnExport: $('btnExport'),
     btnImport: $('btnImport'), fileImport: $('fileImport'),
-    editorCard: $('editorCard'), swapCard: $('swapCard'), resultCard: $('resultCard'),
-    name: $('tplName'), male: $('tplMale'), female: $('tplFemale'), prompt: $('tplPrompt'),
-    newMale: $('newMale'), newFemale: $('newFemale'), wholeWord: $('wholeWord'),
-    output: $('output'), stat: $('stat'), btnCopy: $('btnCopy'), btnCopyOg: $('btnCopyOg'),
-    toast: $('toast')
+    editorCard: $('editorCard'), editorDetails: $('editorDetails'),
+    swapCard: $('swapCard'), resultCard: $('resultCard'),
+    name: $('tplName'), prompt: $('tplPrompt'),
+    fieldsEditor: $('fieldsEditor'), btnAddField: $('btnAddField'),
+    useFields: $('useFields'), wholeWord: $('wholeWord'),
+    legend: $('legend'), output: $('output'), stat: $('stat'),
+    btnCopy: $('btnCopy'), btnCopyOg: $('btnCopyOg'), toast: $('toast')
   };
 
-  function current() {
-    for (var i = 0; i < state.templates.length; i++) {
-      if (state.templates[i].id === state.currentId) return state.templates[i];
-    }
-    return null;
+  function h(tag, attrs, children) {
+    var n = document.createElement(tag);
+    if (attrs) Object.keys(attrs).forEach(function (k) {
+      if (k === 'text') n.textContent = attrs[k];
+      else if (k === 'class') n.className = attrs[k];
+      else if (k in n && typeof attrs[k] !== 'string') n[k] = attrs[k];
+      else n.setAttribute(k, attrs[k]);
+    });
+    (children || []).forEach(function (c) { if (c) n.appendChild(c); });
+    return n;
+  }
+
+  function current() { return findTemplate(state.templates, state.currentId); }
+
+  function getUse(t, f) {
+    var m = state.use[t.id] || (state.use[t.id] = {});
+    return m[f.id] || (m[f.id] = { on: f.enabled, choice: '', custom: '' });
+  }
+
+  function fieldLabel(f, i) { return f.label.trim() || ('欄位 ' + (i + 1)); }
+
+  // 這次實際要換成的文字：有打字就以文字框為準，否則用點選的選項
+  function useValue(f, u) {
+    var c = u.custom.trim();
+    if (c) return c;
+    return f.options.indexOf(u.choice) >= 0 ? u.choice : '';
   }
 
   // ---------- 替換邏輯 ----------
@@ -297,33 +420,34 @@
   // 中文等非拉丁字元不算「字的一部分」，所以中文名字也能正常替換。
   var WORD_CHAR = '[\\p{Script=Latin}\\p{N}_]';
 
-  // 回傳 [{text, type}]，type 為 null / 'm' / 'f'
+  // rules: [{ from, to, idx }]；回傳 segments: [{ text, idx }]，idx 為 null 代表原文
   function buildSegments(text, rules, wholeWord) {
-    rules = rules.filter(function (r) { return r.from && r.to; });
-    if (!text || !rules.length) return { segments: [{ text: text, type: null }], count: { m: 0, f: 0 } };
+    var counts = {};
+    if (!text || !rules.length) return { segments: [{ text: text, idx: null }], counts: counts };
 
-    // 長名字優先，避免一個名字是另一個名字的前綴時出錯；一次掃描完成，不會連鎖替換
-    rules.sort(function (a, b) { return b.from.length - a.from.length; });
-    var body = rules.map(function (r) { return escapeRegExp(r.from); }).join('|');
+    // 長的優先，避免一個是另一個的前綴時出錯；一次掃描完成，不會連鎖替換
+    var sorted = rules.slice().sort(function (a, b) { return b.from.length - a.from.length; });
+    var body = sorted.map(function (r) { return escapeRegExp(r.from); }).join('|');
     var pattern = wholeWord
       ? '(?<!' + WORD_CHAR + ')(?:' + body + ')(?!' + WORD_CHAR + ')'
       : '(?:' + body + ')';
     var re = new RegExp(pattern, 'gu');
 
+    // 原文重複時以排在前面的欄位為準
     var map = {};
     rules.forEach(function (r) { if (!(r.from in map)) map[r.from] = r; });
 
-    var segs = [], last = 0, m, count = { m: 0, f: 0 };
+    var segs = [], last = 0, m;
     while ((m = re.exec(text)) !== null) {
       if (m[0] === '') { re.lastIndex++; continue; }
-      if (m.index > last) segs.push({ text: text.slice(last, m.index), type: null });
+      if (m.index > last) segs.push({ text: text.slice(last, m.index), idx: null });
       var r = map[m[0]];
-      segs.push({ text: r.to, type: r.type });
-      count[r.type]++;
+      segs.push({ text: r.to, idx: r.idx });
+      counts[r.idx] = (counts[r.idx] || 0) + 1;
       last = m.index + m[0].length;
     }
-    if (last < text.length) segs.push({ text: text.slice(last), type: null });
-    return { segments: segs, count: count };
+    if (last < text.length) segs.push({ text: text.slice(last), idx: null });
+    return { segments: segs, counts: counts };
   }
 
   var lastResultText = '';
@@ -331,48 +455,172 @@
   function renderOutput() {
     var t = current();
     el.output.textContent = '';
+    el.legend.textContent = '';
     if (!t || !t.prompt) {
       lastResultText = '';
-      var span = document.createElement('span');
-      span.className = 'empty';
-      span.textContent = '請先在模板裡貼上原始 prompt。';
-      el.output.appendChild(span);
+      el.output.appendChild(h('span', { class: 'empty', text: '請先在「編輯模板」裡貼上原始 prompt。' }));
       el.stat.textContent = '';
       return;
     }
-    var res = buildSegments(t.prompt, [
-      { from: t.male.trim(), to: el.newMale.value.trim(), type: 'm' },
-      { from: t.female.trim(), to: el.newFemale.value.trim(), type: 'f' }
-    ], el.wholeWord.checked);
+
+    var rules = [];
+    t.fields.forEach(function (f, i) {
+      var u = getUse(t, f), from = f.original.trim(), to = useValue(f, u);
+      if (u.on && from && to) rules.push({ from: from, to: to, idx: i });
+    });
+    var res = buildSegments(t.prompt, rules, el.wholeWord.checked);
 
     var frag = document.createDocumentFragment();
     res.segments.forEach(function (s) {
-      if (s.type) {
-        var mk = document.createElement('mark');
-        mk.className = s.type;
-        mk.textContent = s.text;
-        frag.appendChild(mk);
-      } else {
-        frag.appendChild(document.createTextNode(s.text));
-      }
+      if (s.idx === null) frag.appendChild(document.createTextNode(s.text));
+      else frag.appendChild(h('mark', { class: colorClass(s.idx), text: s.text }));
     });
     el.output.appendChild(frag);
     lastResultText = res.segments.map(function (s) { return s.text; }).join('');
 
-    var parts = [];
-    if (el.newMale.value.trim() && t.male.trim()) parts.push('男生名字換了 ' + res.count.m + ' 處');
-    if (el.newFemale.value.trim() && t.female.trim()) parts.push('女生名字換了 ' + res.count.f + ' 處');
-    el.stat.textContent = parts.length ? parts.join('，') : '尚未輸入新名字，目前顯示原始內容。';
+    rules.forEach(function (r) {
+      el.legend.appendChild(h('span', null, [h('mark', { class: colorClass(r.idx), text: fieldLabel(t.fields[r.idx], r.idx) })]));
+    });
+
+    var parts = rules.map(function (r) {
+      var n = res.counts[r.idx] || 0;
+      return fieldLabel(t.fields[r.idx], r.idx) + ' 換了 ' + n + ' 處' + (n ? '' : '（og prompt 裡找不到原文）');
+    });
+    el.stat.textContent = parts.length ? parts.join('，') : '目前沒有要替換的欄位，顯示的是原始內容。';
+  }
+
+  // ---------- 使用區 ----------
+  function renderUse() {
+    var t = current();
+    el.useFields.textContent = '';
+    if (!t) return;
+    if (!t.fields.length) {
+      el.useFields.appendChild(h('p', { class: 'hint', text: '這個模板還沒有替換欄位，請到「編輯模板」新增。' }));
+      return;
+    }
+    t.fields.forEach(function (f, i) {
+      var u = getUse(t, f);
+      var cbId = 'use-' + f.id;
+      var cb = h('input', { type: 'checkbox', id: cbId, checked: u.on });
+      var input = h('input', {
+        type: 'text', value: u.custom, autocomplete: 'off', autocapitalize: 'off', spellcheck: 'false',
+        placeholder: f.options.length ? '自訂（有打字就以這裡為準）' : '新的文字（留空＝不換）',
+        'aria-label': fieldLabel(f, i) + ' 的新文字'
+      });
+      var chips = f.options.map(function (opt) {
+        return h('button', { type: 'button', class: 'chip ' + colorClass(i), text: opt, 'data-opt': opt });
+      });
+      var box = h('div', { class: 'fu' + (u.on ? '' : ' off') }, [
+        h('div', { class: 'fu-head' }, [
+          h('span', { class: 'fu-name' }, [h('span', { class: 'dot ' + colorClass(i) }), h('span', { text: fieldLabel(f, i) })]),
+          h('label', { class: 'check', for: cbId }, [cb, h('span', { text: '這次要換' })])
+        ]),
+        h('div', { class: 'fu-body' }, [
+          h('p', { class: 'fu-orig', text: '原文：' + (f.original.trim() || '（尚未設定，請到「編輯模板」填寫）') }),
+          chips.length ? h('div', { class: 'chips' }, chips) : null,
+          input
+        ])
+      ]);
+
+      function setOn(on) {
+        u.on = on;
+        cb.checked = on;
+        box.classList.toggle('off', !on);
+      }
+      function syncChips() {
+        var active = u.custom.trim() ? null : u.choice;
+        chips.forEach(function (c) { c.setAttribute('aria-pressed', String(c.getAttribute('data-opt') === active)); });
+      }
+      syncChips();
+
+      cb.addEventListener('change', function () { setOn(cb.checked); renderOutput(); saveSoon(); });
+      chips.forEach(function (c) {
+        c.addEventListener('click', function () {
+          var opt = c.getAttribute('data-opt');
+          var wasActive = !u.custom.trim() && u.choice === opt;
+          u.choice = wasActive ? '' : opt;
+          u.custom = '';
+          input.value = '';
+          if (!wasActive) setOn(true);
+          syncChips();
+          renderOutput();
+          saveSoon();
+        });
+      });
+      input.addEventListener('input', function () {
+        u.custom = input.value;
+        if (input.value.trim()) setOn(true);
+        syncChips();
+        renderOutput();
+        saveSoon();
+      });
+
+      el.useFields.appendChild(box);
+    });
+  }
+
+  // ---------- 編輯區的欄位 ----------
+  function renderFieldsEditor() {
+    var t = current();
+    el.fieldsEditor.textContent = '';
+    if (!t) return;
+    t.fields.forEach(function (f, i) {
+      var p = 'fe-' + f.id + '-';
+      var label = h('input', { type: 'text', id: p + 'label', value: f.label, placeholder: '例如：花種', autocomplete: 'off' });
+      var orig = h('input', { type: 'text', id: p + 'orig', value: f.original, placeholder: '例如：tulips', autocomplete: 'off', autocapitalize: 'off', spellcheck: 'false' });
+      var opts = h('textarea', { id: p + 'opts', class: 'short', placeholder: 'Tulips\nRoses\nLavender' });
+      opts.value = f.options.join('\n');
+      var en = h('input', { type: 'checkbox', checked: f.enabled });
+      var up = h('button', { type: 'button', class: 'icon', text: '↑', 'aria-label': '上移', title: '上移', disabled: i === 0 });
+      var down = h('button', { type: 'button', class: 'icon', text: '↓', 'aria-label': '下移', title: '下移', disabled: i === t.fields.length - 1 });
+      var del = h('button', { type: 'button', class: 'danger', text: '刪除' });
+
+      el.fieldsEditor.appendChild(h('div', { class: 'fe' }, [
+        h('div', { class: 'fe-head' }, [h('span', { class: 'dot ' + colorClass(i) }), h('strong', { text: '欄位 ' + (i + 1) }), up, down, del]),
+        h('div', { class: 'grid2' }, [
+          h('div', null, [h('label', { for: p + 'label', text: '欄位名稱' }), label]),
+          h('div', null, [h('label', { for: p + 'orig', text: 'og prompt 裡的原文' }), orig])
+        ]),
+        h('label', { for: p + 'opts', text: '預設選項（選填，一行一個）' }),
+        opts,
+        h('label', { class: 'switch' }, [en, h('span', { text: '預設參與替換' })])
+      ]));
+
+      function changed() { renderUse(); renderOutput(); saveSoon(); }
+      label.addEventListener('input', function () { f.label = label.value; changed(); });
+      orig.addEventListener('input', function () { f.original = orig.value; changed(); });
+      opts.addEventListener('input', function () { f.options = parseOptions(opts.value); changed(); });
+      en.addEventListener('change', function () { f.enabled = en.checked; getUse(t, f).on = en.checked; changed(); });
+      up.addEventListener('click', function () { moveField(t, i, -1); });
+      down.addEventListener('click', function () { moveField(t, i, 1); });
+      del.addEventListener('click', function () {
+        if (!confirm('確定要刪除欄位「' + fieldLabel(f, i) + '」嗎？')) return;
+        t.fields.splice(i, 1);
+        if (state.use[t.id]) delete state.use[t.id][f.id];
+        fieldsChanged();
+      });
+    });
+  }
+
+  function moveField(t, i, dir) {
+    var j = i + dir;
+    if (j < 0 || j >= t.fields.length) return;
+    var tmp = t.fields[i]; t.fields[i] = t.fields[j]; t.fields[j] = tmp;
+    fieldsChanged();
+  }
+
+  function fieldsChanged() {
+    renderFieldsEditor();
+    renderUse();
+    renderOutput();
+    saveNow();
   }
 
   // ---------- 畫面更新 ----------
   function renderSelect() {
     el.select.textContent = '';
     state.templates.forEach(function (t, i) {
-      var o = document.createElement('option');
-      o.value = t.id;
-      o.textContent = t.name.trim() || ('未命名模板 ' + (i + 1));
-      el.select.appendChild(o);
+      el.select.appendChild(h('option', { value: t.id, text: t.name.trim() || ('未命名模板 ' + (i + 1)) }));
     });
     if (state.currentId) el.select.value = state.currentId;
   }
@@ -391,9 +639,11 @@
 
     var t = current();
     el.name.value = t ? t.name : '';
-    el.male.value = t ? t.male : '';
-    el.female.value = t ? t.female : '';
     el.prompt.value = t ? t.prompt : '';
+    // 已經有 prompt 的模板預設收合編輯區，平常只看替換區
+    el.editorDetails.open = !!t && !t.prompt;
+    renderFieldsEditor();
+    renderUse();
     renderOutput();
   }
 
@@ -405,12 +655,11 @@
   });
 
   el.btnNew.addEventListener('click', function () {
-    var t = { id: makeId(), name: '新模板', prompt: '', male: '', female: '' };
+    var t = { id: makeId('t'), name: '新模板', prompt: '', fields: [newField('男角色'), newField('女角色')] };
     state.templates.push(t);
     state.currentId = t.id;
     saveNow();
     renderAll();
-    el.editorDetails = el.editorDetails || $('editorDetails');
     el.editorDetails.open = true;
     el.name.focus();
     el.name.select();
@@ -422,6 +671,7 @@
     if (!confirm('確定要刪除「' + (t.name.trim() || '未命名模板') + '」嗎？此動作無法復原。')) return;
     var idx = state.templates.indexOf(t);
     state.templates.splice(idx, 1);
+    delete state.use[t.id];
     var next = state.templates[idx] || state.templates[idx - 1];
     state.currentId = next ? next.id : null;
     saveNow();
@@ -429,23 +679,28 @@
     toast('已刪除模板');
   });
 
-  function bindField(input, key) {
-    input.addEventListener('input', function () {
-      var t = current();
-      if (!t) return;
-      t[key] = input.value;
-      if (key === 'name') renderSelect();
-      renderOutput();
-      saveSoon();
-    });
-  }
-  bindField(el.name, 'name');
-  bindField(el.male, 'male');
-  bindField(el.female, 'female');
-  bindField(el.prompt, 'prompt');
+  el.name.addEventListener('input', function () {
+    var t = current(); if (!t) return;
+    t.name = el.name.value;
+    renderSelect();
+    saveSoon();
+  });
+  el.prompt.addEventListener('input', function () {
+    var t = current(); if (!t) return;
+    t.prompt = el.prompt.value;
+    renderOutput();
+    saveSoon();
+  });
 
-  el.newMale.addEventListener('input', function () { state.newMale = el.newMale.value; renderOutput(); saveSoon(); });
-  el.newFemale.addEventListener('input', function () { state.newFemale = el.newFemale.value; renderOutput(); saveSoon(); });
+  el.btnAddField.addEventListener('click', function () {
+    var t = current(); if (!t) return;
+    t.fields.push(newField(''));
+    fieldsChanged();
+    var inputs = el.fieldsEditor.querySelectorAll('.fe');
+    var lastInput = inputs[inputs.length - 1].querySelector('input[type="text"]');
+    lastInput.focus();
+  });
+
   el.wholeWord.addEventListener('change', function () { state.wholeWord = el.wholeWord.checked; renderOutput(); saveNow(); });
 
   // ---------- 複製 ----------
@@ -486,17 +741,15 @@
   el.btnExport.addEventListener('click', function () {
     var data = {
       app: 'prompt-name-swap',
-      version: 1,
+      version: DATA_VERSION,
       exportedAt: new Date().toISOString(),
       templates: state.templates
     };
     var blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
     var url = URL.createObjectURL(blob);
-    var a = document.createElement('a');
     var d = new Date();
     var pad = function (n) { return String(n).padStart(2, '0'); };
-    a.href = url;
-    a.download = 'prompt-templates-' + d.getFullYear() + pad(d.getMonth() + 1) + pad(d.getDate()) + '.json';
+    var a = h('a', { href: url, download: 'prompt-templates-' + d.getFullYear() + pad(d.getMonth() + 1) + pad(d.getDate()) + '.json' });
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);
@@ -517,15 +770,16 @@
         list = Array.isArray(data) ? data : (data && Array.isArray(data.templates) ? data.templates : null);
       } catch (e) { list = null; }
       if (!list) { toast('檔案格式不正確'); return; }
-      var incoming = list.map(sanitizeTemplate).filter(Boolean);
+      // 新舊格式都能匯入，舊格式會自動轉成欄位
+      var incoming = list.map(sanitizeTemplate).filter(Boolean).map(function (r) { return r.tpl; });
       if (!incoming.length) { toast('檔案裡沒有模板'); return; }
 
       // 同 id 的覆蓋，其餘新增
       var added = 0, updated = 0;
       incoming.forEach(function (t) {
-        var idx = -1;
-        for (var i = 0; i < state.templates.length; i++) if (state.templates[i].id === t.id) { idx = i; break; }
-        if (idx >= 0) { state.templates[idx] = t; updated++; } else { state.templates.push(t); added++; }
+        var old = findTemplate(state.templates, t.id);
+        if (old) { state.templates[state.templates.indexOf(old)] = t; updated++; }
+        else { state.templates.push(t); added++; }
       });
       if (!current()) state.currentId = incoming[0].id;
       saveNow();
@@ -546,11 +800,9 @@
   }
 
   // ---------- 初始化 ----------
-  el.newMale.value = state.newMale;
-  el.newFemale.value = state.newFemale;
   el.wholeWord.checked = state.wholeWord;
-  el.editorDetails = $('editorDetails');
   renderAll();
+  if (needsSave) saveNow();
 })();
 </script>
 </body>
